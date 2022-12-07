@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.utils.random import sample_without_replacement
 from sklearn.model_selection import KFold
 from tqdm import tqdm
-from learners_ordinal import *
+from learners import *
 
 num_split = 10
 
@@ -38,6 +38,11 @@ mse_t_cv = np.zeros(num_split)
 mse_r_cv = np.zeros(num_split)
 mse_dr_cv = np.zeros(num_split)
 
+s_r2 = np.zeros(num_split)
+t_r2 = np.zeros(num_split)
+r_r2 = np.zeros(num_split)
+dr_r2 = np.zeros(num_split)
+
 j = 0
 
 for train_idxs, test_idxs in tqdm(kf.split(X_all)):
@@ -49,10 +54,10 @@ for train_idxs, test_idxs in tqdm(kf.split(X_all)):
 
     cates_test = cates_all[test_idxs]
 
-    mse_s_cv[j] = s_learner(xs, treats, outcomes, xs_test, cates_test)
-    mse_t_cv[j] = t_learner(xs, treats, outcomes, xs_test, cates_test)
-    mse_r_cv[j] = r_learner(xs, treats, outcomes, xs_test, cates_test)
-    mse_dr_cv[j] = dr_learner(xs, treats, outcomes, xs_test, cates_test)
+    mse_s_cv[j], s_r2[j] = s_learner(xs, treats, outcomes, xs_test, cates_test)
+    mse_t_cv[j], t_r2[j]= t_learner(xs, treats, outcomes, xs_test, cates_test)
+    mse_r_cv[j], r_r2[j] = r_learner(xs, treats, outcomes, xs_test, cates_test)
+    mse_dr_cv[j], dr_r2[j] = dr_learner(xs, treats, outcomes, xs_test, cates_test)
     j+=1
 
 
@@ -60,6 +65,12 @@ print(np.mean(mse_s_cv), np.std(mse_s_cv)*1.96/np.sqrt(num_split))
 print(np.mean(mse_t_cv), np.std(mse_t_cv)*1.96/np.sqrt(num_split))
 print(np.mean(mse_r_cv), np.std(mse_r_cv)*1.96/np.sqrt(num_split))
 print(np.mean(mse_dr_cv), np.std(mse_dr_cv)*1.96/np.sqrt(num_split))
+
+
+print(np.mean(s_r2), np.std(s_r2)*1.96/np.sqrt(num_split))
+print(np.mean(t_r2), np.std(t_r2)*1.96/np.sqrt(num_split))
+print(np.mean(r_r2), np.std(r_r2)*1.96/np.sqrt(num_split))
+print(np.mean(dr_r2), np.std(dr_r2)*1.96/np.sqrt(num_split))
 
 # train_idxs = sample_without_replacement(num, num//2)
 # n1 = len(train_idxs)

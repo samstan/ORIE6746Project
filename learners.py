@@ -2,7 +2,7 @@ import numpy as np
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils.random import sample_without_replacement
 
 
@@ -30,7 +30,7 @@ def s_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
         control = model.predict([np.concatenate((X_test[i], np.array([0])))])[0]
         CATEs[i] = treated - control
     
-    return mean_squared_error(CATEs, cates_test)
+    return mean_squared_error(CATEs, cates_test), r2_score(cates_test, CATEs)
 
 
 def t_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
@@ -58,7 +58,7 @@ def t_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
         control = model0.predict([X_test[i]])[0]
         CATEs[i] = treated - control
     
-    return mean_squared_error(CATEs, cates_test)
+    return mean_squared_error(CATEs, cates_test), r2_score(cates_test, CATEs)
 
 def r_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
     n_train = len(outcomes_train)
@@ -118,7 +118,7 @@ def r_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
 
     CATEs = model3.predict(X_test)
 
-    return mean_squared_error(CATEs, cates_test)
+    return mean_squared_error(CATEs, cates_test), r2_score(cates_test, CATEs)
 
 
 def dr_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
@@ -168,4 +168,4 @@ def dr_learner(xs_train, treats_train, outcomes_train, xs_test, cates_test):
 
     CATEs = model2.predict(X_test)
 
-    return mean_squared_error(CATEs, cates_test)
+    return mean_squared_error(CATEs, cates_test), r2_score(cates_test, CATEs)
